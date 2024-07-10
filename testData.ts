@@ -10,3 +10,6 @@ export const newPet = {
 };
 
 export const statuses = ['available', 'pending', 'sold'];
+
+export const updatedName = 'updatedNameTest';
+export const updatedStatus = 'pending';

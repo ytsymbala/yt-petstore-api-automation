@@ -1,7 +1,7 @@
 // api-tests/petstoreApi.spec.ts
 import path from 'path';
 import { test, expect } from '../page-objects/fixtures';
-import { petId, newPet, statuses } from '../testData'
+import { petId, newPet, statuses, updatedName, updatedStatus } from '../testData'
 
 test.describe('Petstore API', () => {
   
@@ -20,13 +20,6 @@ test.describe('Petstore API', () => {
     expect(pet).toMatchObject(newPet);
   });
 
-  test('Get pet by ID', async ({ petApi }) => {
-    const response = await petApi.getPetById(petId);
-    expect(response.status()).toBe(200);
-    const pet = await response.json();
-    expect(pet).toHaveProperty('id', petId);
-  });
-
   test('Update an existing pet', async ({ petApi }) => {
     const updatedPet = { ...newPet, status: 'sold' };
     const response = await petApi.updatePet(updatedPet);
@@ -41,11 +34,28 @@ test.describe('Petstore API', () => {
       expect(response.status()).toBe(200);
       const pets = await response.json();
       expect(Array.isArray(pets)).toBeTruthy();
-      pets.forEach((pet: any) => {
+        pets.forEach((pet: any) => {
         expect(pet).toHaveProperty('status', status);
       });
     });
   }
+
+  test('Get pet by ID', async ({ petApi }) => {
+    const response = await petApi.getPetById(petId);
+    expect(response.status()).toBe(200);
+    const pet = await response.json();
+    expect(pet).toHaveProperty('id', petId);
+  });
+
+  test('Update pet with form data', async ({ petApi }) => {
+    const response = await petApi.updatePetWithForm(petId, updatedName, updatedStatus);
+    expect(response.status()).toBe(200);
+
+    const updatedPetResponse = await petApi.getPetById(petId);
+    expect(updatedPetResponse.status()).toBe(200);
+    const updatedPet = await updatedPetResponse.json();
+    expect(updatedPet).toMatchObject({ name: updatedName, status: updatedStatus });
+  });
 
   test('Delete a pet', async ({ petApi }) => {
     const response = await petApi.deletePet(petId);

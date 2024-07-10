@@ -24,11 +24,6 @@ export class PetApi {
     return response;
   }
 
-  async getPetById(petId: number) {
-    const response = await this.request.get(`${this.baseURL}/pet/${petId}`);
-    return response;
-  }
-
   async updatePet(pet: object) {
     const response = await this.request.put(`${this.baseURL}/pet`, { data: pet });
     return response;
@@ -37,6 +32,18 @@ export class PetApi {
   async findPetsByStatus(status: string) {
     const response = await this.request.get(`${this.baseURL}/pet/findByStatus?status=${status}`);
     return response;
+  }
+
+  async getPetById(petId: number) {
+    const response = await this.request.get(`${this.baseURL}/pet/${petId}`);
+    return response;
+  }
+
+  async updatePetWithForm(petId: number, name: string, status: string) {
+    return this.request.post(`${this.baseURL}/pet/${petId}`, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      form: { name, status }
+    });
   }
 
   async deletePet(petId: number) {
